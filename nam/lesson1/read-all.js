@@ -2,35 +2,30 @@ const fs = require('fs');
 const conf = {encoding: 'utf8'};
 const filePromise = require('./file-promise');
 
-const showFiles = dir => {
+module.exports = dir => {
     return new Promise((done, fail) => {
         fs.readdir(dir, (err, _files) => {
             if (err) {
               fail(err);
             } else {
-              let files = [];
-              _files.map(file => {
-                  filePromise
-                    .read(dir + '/' + file)
-                    .then(content => {file, content})
-                    .then(items => {
-                        return items.map(item => {
-                            return {id: item.file, text: item.content}
-                        })
-                    })
-                    .then(items=>console.log(items))
-                    .catch(err => console.error(err))
+              let promises = _files.map(file => {
+                  return new Promise((done, fail) => {
+                      fs.readFile(dir + '/' + file, conf, (error, content) => {
+                          if (error) {
+                            fail(error);
+                          } else {
+                            done({
+                              name: file,
+                              content: content
+                            });
+                          }
+                      });
+                  });
               });
-              // _files.forEach(file => {
-              //     files.push({
-              //         name: file,
-              //         content: fs.readFileSync(dir + '/' + file, 'utf8')
-              //     });
-              // });
-              done(files);
+              Promise.all(promises)
+                  .then((files) => done(files))
+                  .catch(err => console.error(err));
             }
         });
     });
 }
-
-module.exports = showFiles;

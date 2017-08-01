@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const pathInfo = (path, callback) => {
+module.exports = (path, callback) => {
     fs.stat(path, (error, stats) => {
         info = {};
 
@@ -8,17 +8,31 @@ const pathInfo = (path, callback) => {
         info.path = path;
 
         if (stats.isFile()) {
-            info.type = 'file';
-            info.content = fs.readFileSync(path, 'utf8');
+            fs.readFile(path, {encoding: 'utf8'}, (error, content) => {
+                if (error) {
+                  callback(error, null);
+                } else {
+                  info.type = 'file';
+                  info.content = content;
+
+                  callback(error, info);
+                }
+            });
         }
 
         if (stats.isDirectory()) {
-            info.type = 'directory';
-            info.childs = fs.readdirSync(path);
+            fs.readdir(path, (error, files) => {
+                if (error) {
+                  callback(error, null);
+                } else {
+                  info.type = 'directory';
+                  info.childs = files;
+
+                  callback(error, info);
+                }
+            });
         }
 
         callback(error, info);
     });
 }
-
-module.exports = pathInfo;
