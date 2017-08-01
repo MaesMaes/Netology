@@ -8,24 +8,24 @@ const pathInfo = require('./path-info');
  */
 
 //=============Задание 1=============
-file
-  .read('data.txt')
-  .then(data => data.toUpperCase())
-  .then(data => file.write('./upper-data.txt', data))
-  .then(filename => console.log(`Создан файл ${filename}`))
-  .catch(err => console.error(err));
+// file
+//   .read('data.txt')
+//   .then(data => data.toUpperCase())
+//   .then(data => file.write('./upper-data.txt', data))
+//   .then(filename => console.log(`Создан файл ${filename}`))
+//   .catch(err => console.error(err));
 
 //=============Задание 2=============
-// function show(file) {
-//   console.log('-'.repeat(10));
-//   console.log(`Содержимое файла ${file.name}:`);
-//   console.log(file.content);
-//   console.log('-'.repeat(10));
-// }
-//
-// readAll('logs')
-//   .then(files => files.forEach(show))
-//   .catch(err => console.error(err));
+function show(file) {
+  console.log('-'.repeat(10));
+  console.log(`Содержимое файла ${file.name}:`);
+  console.log(file.content);
+  console.log('-'.repeat(10));
+}
+
+readAll('logs')
+  .then(files => files.forEach(show))
+  .catch(err => console.error(err));
 
 //=============Задание 3=============
 // function showInfo(err, info) {

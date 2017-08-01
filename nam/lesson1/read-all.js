@@ -9,12 +9,24 @@ const showFiles = dir => {
               fail(err);
             } else {
               let files = [];
-              _files.forEach(file => {
-                  files.push({
-                      name: file,
-                      content: fs.readFileSync(dir + '/' + file, 'utf8')
-                  });
+              _files.map(file => {
+                  filePromise
+                    .read(dir + '/' + file)
+                    .then(content => {file, content})
+                    .then(items => {
+                        return items.map(item => {
+                            return {id: item.file, text: item.content}
+                        })
+                    })
+                    .then(items=>console.log(items))
+                    .catch(err => console.error(err))
               });
+              // _files.forEach(file => {
+              //     files.push({
+              //         name: file,
+              //         content: fs.readFileSync(dir + '/' + file, 'utf8')
+              //     });
+              // });
               done(files);
             }
         });
